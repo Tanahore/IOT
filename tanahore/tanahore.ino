@@ -2,6 +2,7 @@
 #include <DallasTemperature.h>
 #include <WiFi.h>
 #include <WebServer.h>
+#include <FirebaseESP32.h>
 #include "ServerRoutes.h"
 
 #define ONE_WIRE_BUS D0
@@ -9,8 +10,13 @@
 #define Humidity A0
 #define Acidity A2
 
-#define WIFI_SSID "RINA"
-#define WIFI_PASS "16012012Dharma"
+#define FIREBASE_HOST "https://tanahore-2-527b8-default-rtdb.firebaseio.com/"
+#define FIREBASE_AUTH "AIzaSyDHtslndy3IWXVQB3Doz0t6OWglnNEXZRc"
+#define DEVICE_ID "DT11"
+
+FirebaseData firebaseData;
+FirebaseAuth auth;
+FirebaseConfig config;
 
 const char *ssid = "Tanahore-DT11";
 const char *password = "";
@@ -47,6 +53,22 @@ void setup(void) {
   setupRoutes(server);  // Tidak perlu ssidNew dan passNew
   sensors.begin();
   server.begin();
+
+  config.host = FIREBASE_HOST;
+  config.api_key = FIREBASE_AUTH;
+  auth.user.email = "";
+  auth.user.password = "";
+
+  Firebase.begin(&config, &auth);
+  Firebase.reconnectWiFi(true);
+
+  String path = "/devices/" + String(DEVICE_ID);
+
+  if (Firebase.beginStream(firebaseData, path.c_str())) {
+    Serial.println("Connected to Firebase");
+  } else {
+    Serial.printf("Could not connect to Firebase: %s\n", firebaseData.errorReason().c_str());
+  }
 
   Serial.println("HTTP server started");
 }
