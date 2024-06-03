@@ -11,8 +11,8 @@
 #define Humidity A0
 #define Acidity A2
 
-#define FIREBASE_HOST "https://tanahore-2-527b8-default-rtdb.firebaseio.com/"
-#define FIREBASE_AUTH "AIzaSyDHtslndy3IWXVQB3Doz0t6OWglnNEXZRc"
+#define FIREBASE_HOST "tanahore-2-527b8-default-rtdb.firebaseio.com"
+#define FIREBASE_AUTH "JEfq64LfZ6EVwfdNlOl0pSXbEr7WDDgnKLfTYHXj"
 #define DEVICE_ID "DT11"
 #define API_ADDRESS "https://tanahore-model-api-srzz6vflpq-as.a.run.app"
 

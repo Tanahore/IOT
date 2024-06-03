@@ -9,5 +9,8 @@ extern FirebaseAuth auth;
 extern FirebaseConfig config;
 
 void setupFirebase();
+String getDeviceStatus();
+void updateDeviceStatus(String status);
+void updateDeviceInput(float ph, int humidity, float temperature, int lightIntensity);
 
 #endif
