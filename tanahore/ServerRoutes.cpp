@@ -1,5 +1,7 @@
 #include "ServerRoutes.h"
 #include "index.h"
+#include "firebase.h"
+#include "config.h"
 #include <WiFi.h>
 
 extern String ssidNew;
@@ -29,10 +31,11 @@ void handleForm(WebServer &server) {
 }
 
 void handleRoot(WebServer &server) {
+  Serial.println("Handling root request");
   server.send(200, "text/html", index_html);
 }
 
 void setupRoutes(WebServer &server) {
-  server.on("/", [&server](){ handleRoot(server); });
-  server.on("/handleForm", [&server](){ handleForm(server); });
+  server.on("/", [&server]() { handleRoot(server); });
+  server.on("/handleForm", [&server]() { handleForm(server); });
 }
