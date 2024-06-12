@@ -1,40 +1,54 @@
+#include <WiFi.h>
+#include <WebServer.h>
 #include "ServerRoutes.h"
 #include "config.h"
 #include "firebase.h"
 
+#define LightIntensity A1
+#define Humidity A0
+#define Acidity A2
+
 void setup(void) {
   initSetup();
   setupRoutes(server);
-  sensors.begin();
-  server.begin();
-  setupFirebase();
-
-  Serial.println("HTTP server started");
+  Serial.println("Dallas Temperature Sensor Example");
+  server.begin();  // Start the server
 }
 
 void loop(void) {
   if (ssidNew == "") {
     server.handleClient();
+    Serial.println("Handling client");
   } else {
-    Serial.println("Yeay Terhubung!!!!");
-    sensors.requestTemperatures();
+    WiFi.mode(WIFI_OFF);
+    delay(10);
+    
+    int lightIntensity = analogRead(LightIntensity);
+    int humidity = analogRead(Humidity);
+    float phInput = analogRead(Acidity);
+    float ph = (-0.0139*phInput)+7.7851;
+
+    Serial.print("pH off: ");
+    Serial.println(ph);
+
+    Serial.print("Humidity: ");
+    Serial.print(humidity / 10);
+    Serial.println("%");
+
+    Serial.print("Light Intensity: ");
+    Serial.println(lightIntensity / 2);
+
+    WiFi.begin(ssidNew.c_str(), passNew.c_str());
+    setupFirebase();
     String status = getDeviceStatus();
-    if(status == "on") {
-      float temperatureC = sensors.getTempCByIndex(0);
-      int lightIntensity = analogRead(LightIntensity);
-      int humidity = analogRead(Humidity);
-      float phInput = analogRead(Acidity);
-      float ph = (-0.0139 * phInput) + 7.7851;
-
-      Serial.println("suhu :" + String(temperatureC));
-      Serial.println("cahaya :" + String(lightIntensity));
-      Serial.println("kelembapan :" + String(humidity));
-      Serial.println("ph: " + String(ph));
-
+    if (status == "on") {
+      Serial.println("Yeay Terhubung!!!!");
       status = "off";
-      updateDeviceStatus(status);
-      updateDeviceInput(ph, humidity, temperatureC, lightIntensity);
+      if (ph > 1) {
+        updateDeviceInput(ph, humidity/10, 33.5, lightIntensity/2);
+        updateDeviceStatus(status);
+      }
     }
-    delay(2000);
   }
+  delay(1000);
 }

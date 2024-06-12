@@ -58,7 +58,7 @@ void updateDeviceInput(float ph, int humidity, float temperature, int lightInten
   json.set("ph", ph);
   json.set("kelembapan", humidity);
   json.set("suhu", temperature);
-  json.set("instensitasCahaya", lightIntensity);
+  json.set("intensitasCahaya", lightIntensity);
 
   if (Firebase.updateNode(firebaseData, path.c_str(), json)) {
     Serial.println("Device input updated successfully");
