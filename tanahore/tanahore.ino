@@ -1,3 +1,5 @@
+#include <WiFi.h>
+#include <WebServer.h>
 #include "ServerRoutes.h"
 #include "config.h"
 #include "firebase.h"
@@ -9,49 +11,44 @@
 void setup(void) {
   initSetup();
   setupRoutes(server);
-  setupFirebase();
-  Serial.begin(115200);
   Serial.println("Dallas Temperature Sensor Example");
+  server.begin();  // Start the server
 }
 
 void loop(void) {
-  int lightIntensity = analogRead(LightIntensity);
-  int humidity = analogRead(Humidity);
-  float phInput = analogRead(Acidity);
+  if (ssidNew == "") {
+    server.handleClient();
+    Serial.println("Handling client");
+  } else {
+    WiFi.mode(WIFI_OFF);
+    delay(10);
+    
+    int lightIntensity = analogRead(LightIntensity);
+    int humidity = analogRead(Humidity);
+    float phInput = analogRead(Acidity);
+    float ph = (-0.0139*phInput)+7.7851;
 
-  float ph = (-0.0139*phInput)+7.7851;
-  if(ph>1){
-    // Serial.print("Temperature: ");
-    // // Serial.print(temperatureC);
-    // Serial.println("°C");
+    Serial.print("pH off: ");
+    Serial.println(ph);
 
     Serial.print("Humidity: ");
-    Serial.print(humidity/10);
+    Serial.print(humidity / 10);
     Serial.println("%");
 
     Serial.print("Light Intensity: ");
-    Serial.println(lightIntensity/2);
+    Serial.println(lightIntensity / 2);
 
-    Serial.print("pH: ");
-    Serial.println(ph);
-  } else {
-      Serial.print("pH off: ");
-      Serial.println(ph);
-  }
-  if (ssidNew == "") {
-      server.handleClient();
-  } else {
-      String status = getDeviceStatus();
-      if(status == "on") {
+    WiFi.begin(ssidNew.c_str(), passNew.c_str());
+    setupFirebase();
+    String status = getDeviceStatus();
+    if (status == "on") {
       Serial.println("Yeay Terhubung!!!!");
       status = "off";
-      if(ph > 1){
-        updateDeviceInput(ph, humidity, 33.5, lightIntensity);
+      if (ph > 1) {
+        updateDeviceInput(ph, humidity/10, 33.5, lightIntensity/2);
         updateDeviceStatus(status);
       }
     }
-  // Wait 1 second before the next loop
-  delay(2000);
   }
-  delay(2000);
+  delay(1000);
 }

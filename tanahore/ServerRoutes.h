@@ -4,5 +4,6 @@
 #include <WebServer.h>
 
 void setupRoutes(WebServer &server);
+void reconnect();
 
 #endif
