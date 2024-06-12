@@ -5,9 +5,6 @@ const char *password = "";
 
 WebServer server(80);
 
-OneWire oneWire(ONE_WIRE_BUS);
-DallasTemperature sensors(&oneWire); 
-
 String ssidNew = "";
 String passNew = "";
 

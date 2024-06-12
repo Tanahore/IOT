@@ -4,6 +4,12 @@
 #include "config.h"
 #include <FirebaseESP32.h>
 
+
+#define FIREBASE_HOST "tanahore-2-527b8-default-rtdb.firebaseio.com"
+#define FIREBASE_AUTH "JEfq64LfZ6EVwfdNlOl0pSXbEr7WDDgnKLfTYHXj"
+#define DEVICE_ID "DT11"
+#define API_ADDRESS "https://tanahore-model-api-srzz6vflpq-as.a.run.app"
+
 extern FirebaseData firebaseData;
 extern FirebaseAuth auth;
 extern FirebaseConfig config;
